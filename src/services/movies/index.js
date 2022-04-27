@@ -124,15 +124,18 @@ movieRouter.delete("/:movieId", async (req, res, next) => {
 
     let moviesArr = await getMovies();
     let movies = moviesArr.Search;
+
     let getMovieIndex = movies.findIndex((movie) => movie.id === movieId);
+    if (movieId !== 1) {
+      movies.splice(getMovieIndex, 1);
 
-    movies.splice(getMovieIndex, 1);
+      movies = moviesArr.Search;
 
-    movies = moviesArr.Search;
-
-    console.log("request ID:", moviesArr);
-    postMovies(moviesArr);
-    res.send(`movie with id ${movieId} was deleted successfully`);
+      postMovies(moviesArr);
+      res.send(`movie with id ${movieId} was deleted successfully`);
+    } else {
+      next(createError(404, `The movie with id ${movieId} is not found`));
+    }
   } catch (error) {
     console.log(error);
     next(error);
